@@ -1,334 +1,279 @@
-if game.PlaceId == 2753915549 then
-    World1 = true
-elseif game.PlaceId == 4442272183 then
-    World2 = true
-elseif game.PlaceId == 7449423635 then
-    World3 = true
-else
-    game:GetService("Players").LocalPlayer:Kick("Do not Support, Please wait...")
-end
+<!doctype html>
 
-function CheckQuest() 
-    MyLevel = game:GetService("Players").LocalPlayer.Data.Level.Value
-    if World1 then
-        if MyLevel == 1 or MyLevel <= 9 then
-            Mon = "Bandit"
-            LevelQuest = 1
-            NameQuest = "BanditQuest1"
-            NameMon = "Bandit"
-            CFrameQuest = CFrame.new(1059.37195, 15.4495068, 1550.4231, 0.939700544, -0, -0.341998369, 0, 1, -0, 0.341998369, 0, 0.939700544)
-            CFrameMon = CFrame.new(1045.962646484375, 27.00250816345215, 1560.8203125)
-        elseif MyLevel == 10 or MyLevel <= 14 then
-            Mon = "Monkey"
-            LevelQuest = 1
-            NameQuest = "JungleQuest"
-            NameMon = "Monkey"
-            CFrameQuest = CFrame.new(-1598.08911, 35.5501175, 153.377838, 0, 0, 1, 0, 1, -0, -1, 0, 0)
-            CFrameMon = CFrame.new(-1448.51806640625, 67.85301208496094, 11.46579647064209)
-        elseif MyLevel == 15 or MyLevel <= 29 then
-            Mon = "Gorilla"
-            LevelQuest = 2
-            NameQuest = "JungleQuest"
-            NameMon = "Gorilla"
-            CFrameQuest = CFrame.new(-1598.08911, 35.5501175, 153.377838, 0, 0, 1, 0, 1, -0, -1, 0, 0)
-            CFrameMon = CFrame.new(-1129.8836669921875, 40.46354675292969, -525.4237060546875)
-        elseif MyLevel == 30 or MyLevel <= 39 then
-            Mon = "Pirate"
-            LevelQuest = 1
-            NameQuest = "BuggyQuest1"
-            NameMon = "Pirate"
-            CFrameQuest = CFrame.new(-1141.07483, 4.10001802, 3831.5498, 0.965929627, -0, -0.258804798, 0, 1, -0, 0.258804798, 0, 0.965929627)
-            CFrameMon = CFrame.new(-1103.513427734375, 13.752052307128906, 3896.091064453125)
-        elseif MyLevel == 40 or MyLevel <= 59 then
-            Mon = "Brute"
-            LevelQuest = 2
-            NameQuest = "BuggyQuest1"
-            NameMon = "Brute"
-            CFrameQuest = CFrame.new(-1141.07483, 4.10001802, 3831.5498, 0.965929627, -0, -0.258804798, 0, 1, -0, 0.258804798, 0, 0.965929627)
-            CFrameMon = CFrame.new(-1140.083740234375, 14.809885025024414, 4322.92138671875)
-        elseif MyLevel == 60 or MyLevel <= 74 then
-            Mon = "Desert Bandit"
-            LevelQuest = 1
-            NameQuest = "DesertQuest"
-            NameMon = "Desert Bandit"
-            CFrameQuest = CFrame.new(894.488647, 5.14000702, 4392.43359, 0.819155693, -0, -0.573571265, 0, 1, -0, 0.573571265, 0, 0.819155693)
-            CFrameMon = CFrame.new(924.7998046875, 6.44867467880249, 4481.5859375)
-        elseif MyLevel == 75 or MyLevel <= 89 then
-            Mon = "Desert Officer"
-            LevelQuest = 2
-            NameQuest = "DesertQuest"
-            NameMon = "Desert Officer"
-            CFrameQuest = CFrame.new(894.488647, 5.14000702, 4392.43359, 0.819155693, -0, -0.573571265, 0, 1, -0, 0.573571265, 0, 0.819155693)
-            CFrameMon = CFrame.new(1608.2822265625, 8.614224433898926, 4371.00732421875)
-        elseif MyLevel == 90 or MyLevel <= 99 then
-            Mon = "Snow Bandit"
-            LevelQuest = 1
-            NameQuest = "SnowQuest"
-            NameMon = "Snow Bandit"
-            CFrameQuest = CFrame.new(1389.74451, 88.1519318, -1298.90796, -0.342042685, 0, 0.939684391, 0, 1, 0, -0.939684391, 0, -0.342042685)
-            CFrameMon = CFrame.new(1354.347900390625, 87.27277374267578, -1393.946533203125)
-        elseif MyLevel == 100 or MyLevel <= 119 then
-            Mon = "Snowman"
-            LevelQuest = 2
-            NameQuest = "SnowQuest"
-            NameMon = "Snowman"
-            CFrameQuest = CFrame.new(1389.74451, 88.1519318, -1298.90796, -0.342042685, 0, 0.939684391, 0, 1, 0, -0.939684391, 0, -0.342042685)
-            CFrameMon = CFrame.new(1201.6412353515625, 144.57958984375, -1550.0670166015625)
-        elseif MyLevel == 120 or MyLevel <= 149 then
-            Mon = "Chief Petty Officer"
-            LevelQuest = 1
-            NameQuest = "MarineQuest2"
-            NameMon = "Chief Petty Officer"
-            CFrameQuest = CFrame.new(-5039.58643, 27.3500385, 4324.68018, 0, 0, -1, 0, 1, 0, 1, 0, 0)
-            CFrameMon = CFrame.new(-4881.23095703125, 22.65204429626465, 4273.75244140625)
-        elseif MyLevel == 150 or MyLevel <= 174 then
-            Mon = "Sky Bandit"
-            LevelQuest = 1
-            NameQuest = "SkyQuest"
-            NameMon = "Sky Bandit"
-            CFrameQuest = CFrame.new(-4839.53027, 716.368591, -2619.44165, 0.866007268, 0, 0.500031412, 0, 1, 0, -0.500031412, 0, 0.866007268)
-            CFrameMon = CFrame.new(-4953.20703125, 295.74420166015625, -2899.22900390625)
-        elseif MyLevel == 175 or MyLevel <= 189 then
-            Mon = "Dark Master"
-            LevelQuest = 2
-            NameQuest = "SkyQuest"
-            NameMon = "Dark Master"
-            CFrameQuest = CFrame.new(-4839.53027, 716.368591, -2619.44165, 0.866007268, 0, 0.500031412, 0, 1, 0, -0.500031412, 0, 0.866007268)
-            CFrameMon = CFrame.new(-5259.8447265625, 391.3976745605469, -2229.035400390625)
-        elseif MyLevel == 190 or MyLevel <= 209 then
-            Mon = "Prisoner"
-            LevelQuest = 1
-            NameQuest = "PrisonerQuest"
-            NameMon = "Prisoner"
-            CFrameQuest = CFrame.new(5308.93115, 1.65517521, 475.120514, -0.0894274712, -5.00292918e-09, -0.995993316, 1.60817859e-09, 1, -5.16744869e-09, 0.995993316, -2.06384709e-09, -0.0894274712)
-            CFrameMon = CFrame.new(5098.9736328125, -0.3204058110713959, 474.2373352050781)
-        elseif MyLevel == 210 or MyLevel <= 249 then
-            Mon = "Dangerous Prisoner"
-            LevelQuest = 2
-            NameQuest = "PrisonerQuest"
-            NameMon = "Dangerous Prisoner"
-            CFrameQuest = CFrame.new(5308.93115, 1.65517521, 475.120514, -0.0894274712, -5.00292918e-09, -0.995993316, 1.60817859e-09, 1, -5.16744869e-09, 0.995993316, -2.06384709e-09, -0.0894274712)
-            CFrameMon = CFrame.new(5654.5634765625, 15.633401870727539, 866.2991943359375)
-        elseif MyLevel == 250 or MyLevel <= 274 then
-            Mon = "Toga Warrior"
-            LevelQuest = 1
-            NameQuest = "ColosseumQuest"
-            NameMon = "Toga Warrior"
-            CFrameQuest = CFrame.new(-1580.04663, 6.35000277, -2986.47534, -0.515037298, 0, -0.857167721, 0, 1, 0, 0.857167721, 0, -0.515037298)
-            CFrameMon = CFrame.new(-1820.21484375, 51.68385696411133, -2740.6650390625)
-        elseif MyLevel == 275 or MyLevel <= 299 then
-            Mon = "Gladiator"
-            LevelQuest = 2
-            NameQuest = "ColosseumQuest"
-            NameMon = "Gladiator"
-            CFrameQuest = CFrame.new(-1580.04663, 6.35000277, -2986.47534, -0.515037298, 0, -0.857167721, 0, 1, 0, 0.857167721, 0, -0.515037298)
-            CFrameMon = CFrame.new(-1292.838134765625, 56.380882263183594, -3339.031494140625)
-        elseif MyLevel == 300 or MyLevel <= 324 then
-            Mon = "Military Soldier"
-            LevelQuest = 1
-            NameQuest = "MagmaQuest"
-            NameMon = "Military Soldier"
-            CFrameQuest = CFrame.new(-5313.37012, 10.9500084, 8515.29395, -0.499959469, 0, 0.866048813, 0, 1, 0, -0.866048813, 0, -0.499959469)
-            CFrameMon = CFrame.new(-5411.16455078125, 11.081554412841797, 8454.29296875)
-        elseif MyLevel == 325 or MyLevel <= 374 then
-            Mon = "Military Spy"
-            LevelQuest = 2
-            NameQuest = "MagmaQuest"
-            NameMon = "Military Spy"
-            CFrameQuest = CFrame.new(-5313.37012, 10.9500084, 8515.29395, -0.499959469, 0, 0.866048813, 0, 1, 0, -0.866048813, 0, -0.499959469)
-            CFrameMon = CFrame.new(-5802.8681640625, 86.26241302490234, 8828.859375)
-        elseif MyLevel == 375 or MyLevel <= 399 then
-            Mon = "Fishman Warrior"
-            LevelQuest = 1
-            NameQuest = "FishmanQuest"
-            NameMon = "Fishman Warrior"
-            CFrameQuest = CFrame.new(61122.65234375, 18.497442245483, 1569.3997802734)
-            CFrameMon = CFrame.new(60878.30078125, 18.482830047607422, 1543.7574462890625)
-            if _G.AutoFarm and (CFrameQuest.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
-                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(61163.8515625, 11.6796875, 1819.7841796875))
-            end
-        elseif MyLevel == 400 or MyLevel <= 449 then
-            Mon = "Fishman Commando"
-            LevelQuest = 2
-            NameQuest = "FishmanQuest"
-            NameMon = "Fishman Commando"
-            CFrameQuest = CFrame.new(61122.65234375, 18.497442245483, 1569.3997802734)
-            CFrameMon = CFrame.new(61922.6328125, 18.482830047607422, 1493.934326171875)
-            if _G.AutoFarm and (CFrameQuest.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
-                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(61163.8515625, 11.6796875, 1819.7841796875))
-            end
-        elseif MyLevel == 450 or MyLevel <= 474 then
-            Mon = "God's Guard"
-            LevelQuest = 1
-            NameQuest = "SkyExp1Quest"
-            NameMon = "God's Guard"
-            CFrameQuest = CFrame.new(-4721.88867, 843.874695, -1949.96643, 0.996191859, -0, -0.0871884301, 0, 1, -0, 0.0871884301, 0, 0.996191859)
-            CFrameMon = CFrame.new(-4710.04296875, 845.2769775390625, -1927.3079833984375)
-            if _G.AutoFarm and (CFrameQuest.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
-                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(-4607.82275, 872.54248, -1667.55688))
-            end
-        elseif MyLevel == 475 or MyLevel <= 524 then
-            Mon = "Shanda"
-            LevelQuest = 2
-            NameQuest = "SkyExp1Quest"
-            NameMon = "Shanda"
-            CFrameQuest = CFrame.new(-7859.09814, 5544.19043, -381.476196, -0.422592998, 0, 0.906319618, 0, 1, 0, -0.906319618, 0, -0.422592998)
-            CFrameMon = CFrame.new(-7678.48974609375, 5566.40380859375, -497.2156066894531)
-            if _G.AutoFarm and (CFrameQuest.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
-                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(-7894.6176757813, 5547.1416015625, -380.29119873047))
-            end
-        elseif MyLevel == 525 or MyLevel <= 549 then
-            Mon = "Royal Squad"
-            LevelQuest = 1
-            NameQuest = "SkyExp2Quest"
-            NameMon = "Royal Squad"
-            CFrameQuest = CFrame.new(-7906.81592, 5634.6626, -1411.99194, 0, 0, -1, 0, 1, 0, 1, 0, 0)
-            CFrameMon = CFrame.new(-7624.25244140625, 5658.13330078125, -1467.354248046875)
-        elseif MyLevel == 550 or MyLevel <= 624 then
-            Mon = "Royal Soldier"
-            LevelQuest = 2
-            NameQuest = "SkyExp2Quest"
-            NameMon = "Royal Soldier"
-            CFrameQuest = CFrame.new(-7906.81592, 5634.6626, -1411.99194, 0, 0, -1, 0, 1, 0, 1, 0, 0)
-            CFrameMon = CFrame.new(-7836.75341796875, 5645.6640625, -1790.6236572265625)
-        elseif MyLevel == 625 or MyLevel <= 649 then
-            Mon = "Galley Pirate"
-            LevelQuest = 1
-            NameQuest = "FountainQuest"
-            NameMon = "Galley Pirate"
-            CFrameQuest = CFrame.new(5259.81982, 37.3500175, 4050.0293, 0.087131381, 0, 0.996196866, 0, 1, 0, -0.996196866, 0, 0.087131381)
-            CFrameMon = CFrame.new(5551.02197265625, 78.90135192871094, 3930.412841796875)
-        elseif MyLevel >= 650 then
-            Mon = "Galley Captain"
-            LevelQuest = 2
-            NameQuest = "FountainQuest"
-            NameMon = "Galley Captain"
-            CFrameQuest = CFrame.new(5259.81982, 37.3500175, 4050.0293, 0.087131381, 0, 0.996196866, 0, 1, 0, -0.996196866, 0, 0.087131381)
-            CFrameMon = CFrame.new(5441.95166015625, 42.50205993652344, 4950.09375)
-        end
-    elseif World2 then
-        if MyLevel == 700 or MyLevel <= 724 then
-            Mon = "Raider"
-            LevelQuest = 1
-            NameQuest = "Area1Quest"
-            NameMon = "Raider"
-            CFrameQuest = CFrame.new(-429.543518, 71.7699966, 1836.18188, -0.22495985, 0, -0.974368095, 0, 1, 0, 0.974368095, 0, -0.22495985)
-            CFrameMon = CFrame.new(-728.3267211914062, 52.779319763183594, 2345.7705078125)
-        elseif MyLevel == 725 or MyLevel <= 774 then
-            Mon = "Mercenary"
-            LevelQuest = 2
-            NameQuest = "Area1Quest"
-            NameMon = "Mercenary"
-            CFrameQuest = CFrame.new(-429.543518, 71.7699966, 1836.18188, -0.22495985, 0, -0.974368095, 0, 1, 0, 0.974368095, 0, -0.22495985)
-            CFrameMon = CFrame.new(-1004.3244018554688, 80.15886688232422, 1424.619384765625)
-        elseif MyLevel == 775 or MyLevel <= 799 then
-            Mon = "Swan Pirate"
-            LevelQuest = 1
-            NameQuest = "Area2Quest"
-            NameMon = "Swan Pirate"
-            CFrameQuest = CFrame.new(638.43811, 71.769989, 918.282898, 0.139203906, 0, 0.99026376, 0, 1, 0, -0.99026376, 0, 0.139203906)
-            CFrameMon = CFrame.new(1068.664306640625, 137.61428833007812, 1322.1060791015625)
-        elseif MyLevel == 800 or MyLevel <= 874 then
-            Mon = "Factory Staff"
-            NameQuest = "Area2Quest"
-            LevelQuest = 2
-            NameMon = "Factory Staff"
-            CFrameQuest = CFrame.new(632.698608, 73.1055908, 918.666321, -0.0319722369, 8.96074881e-10, -0.999488771, 1.36326533e-10, 1, 8.92172336e-10, 0.999488771, -1.07732087e-10, -0.0319722369)
-            CFrameMon = CFrame.new(73.07867431640625, 81.86344146728516, -27.470672607421875)
-        elseif MyLevel == 875 or MyLevel <= 899 then
-            Mon = "Marine Lieutenant"
-            LevelQuest = 1
-            NameQuest = "MarineQuest3"
-            NameMon = "Marine Lieutenant"
-            CFrameQuest = CFrame.new(-2440.79639, 71.7140732, -3216.06812, 0.866007268, 0, 0.500031412, 0, 1, 0, -0.500031412, 0, 0.866007268)
-            CFrameMon = CFrame.new(-2821.372314453125, 75.89727783203125, -3070.089111328125)
-        elseif MyLevel == 900 or MyLevel <= 949 then
-            Mon = "Marine Captain"
-            LevelQuest = 2
-            NameQuest = "MarineQuest3"
-            NameMon = "Marine Captain"
-            CFrameQuest = CFrame.new(-2440.79639, 71.7140732, -3216.06812, 0.866007268, 0, 0.500031412, 0, 1, 0, -0.500031412, 0, 0.866007268)
-            CFrameMon = CFrame.new(-1861.2310791015625, 80.17658233642578, -3254.697509765625)
-        elseif MyLevel == 950 or MyLevel <= 974 then
-            Mon = "Zombie"
-            LevelQuest = 1
-            NameQuest = "ZombieQuest"
-            NameMon = "Zombie"
-            CFrameQuest = CFrame.new(-5497.06152, 47.5923004, -795.237061, -0.29242146, 0, -0.95628953, 0, 1, 0, 0.95628953, 0, -0.29242146)
-            CFrameMon = CFrame.new(-5657.77685546875, 78.96973419189453, -928.68701171875)
-        elseif MyLevel == 975 or MyLevel <= 999 then
-            Mon = "Vampire"
-            LevelQuest = 2
-            NameQuest = "ZombieQuest"
-            NameMon = "Vampire"
-            CFrameQuest = CFrame.new(-5497.06152, 47.5923004, -795.237061, -0.29242146, 0, -0.95628953, 0, 1, 0, 0.95628953, 0, -0.29242146)
-            CFrameMon = CFrame.new(-6037.66796875, 32.18463897705078, -1340.6597900390625)
-        elseif MyLevel == 1000 or MyLevel <= 1049 then
-            Mon = "Snow Trooper"
-            LevelQuest = 1
-            NameQuest = "SnowMountainQuest"
-            NameMon = "Snow Trooper"
-            CFrameQuest = CFrame.new(609.858826, 400.119904, -5372.25928, -0.374604106, 0, 0.92718488, 0, 1, 0, -0.92718488, 0, -0.374604106)
-            CFrameMon = CFrame.new(549.1473388671875, 427.3870544433594, -5563.69873046875)
-        elseif MyLevel == 1050 or MyLevel <= 1099 then
-            Mon = "Winter Warrior"
-            LevelQuest = 2
-            NameQuest = "SnowMountainQuest"
-            NameMon = "Winter Warrior"
-            CFrameQuest = CFrame.new(609.858826, 400.119904, -5372.25928, -0.374604106, 0, 0.92718488, 0, 1, 0, -0.92718488, 0, -0.374604106)
-            CFrameMon = CFrame.new(1142.7451171875, 475.6398010253906, -5199.41650390625)
-        elseif MyLevel == 1100 or MyLevel <= 1124 then
-            Mon = "Lab Subordinate"
-            LevelQuest = 1
-            NameQuest = "IceSideQuest"
-            NameMon = "Lab Subordinate"
-            CFrameQuest = CFrame.new(-6064.06885, 15.2422857, -4902.97852, 0.453972578, -0, -0.891015649, 0, 1, -0, 0.891015649, 0, 0.453972578)
-            CFrameMon = CFrame.new(-5707.4716796875, 15.951709747314453, -4513.39208984375)
-        elseif MyLevel == 1125 or MyLevel <= 1174 then
-            Mon = "Horned Warrior"
-            LevelQuest = 2
-            NameQuest = "IceSideQuest"
-            NameMon = "Horned Warrior"
-            CFrameQuest = CFrame.new(-6064.06885, 15.2422857, -4902.97852, 0.453972578, -0, -0.891015649, 0, 1, -0, 0.891015649, 0, 0.453972578)
-            CFrameMon = CFrame.new(-6341.36669921875, 15.951770782470703, -5723.162109375)
-        elseif MyLevel == 1175 or MyLevel <= 1199 then
-            Mon = "Magma Ninja"
-            LevelQuest = 1
-            NameQuest = "FireSideQuest"
-            NameMon = "Magma Ninja"
-            CFrameQuest = CFrame.new(-5428.03174, 15.0622921, -5299.43457, -0.882952213, 0, 0.469463557, 0, 1, 0, -0.469463557, 0, -0.882952213)
-            CFrameMon = CFrame.new(-5449.6728515625, 76.65874481201172, -5808.20068359375)
-        elseif MyLevel == 1200 or MyLevel <= 1249 then
-            Mon = "Lava Pirate"
-            LevelQuest = 2
-            NameQuest = "FireSideQuest"
-            NameMon = "Lava Pirate"
-            CFrameQuest = CFrame.new(-5428.03174, 15.0622921, -5299.43457, -0.882952213, 0, 0.469463557, 0, 1, 0, -0.469463557, 0, -0.882952213)
-            CFrameMon = CFrame.new(-5213.33154296875, 49.73788070678711, -4701.451171875)
-        elseif MyLevel == 1250 or MyLevel <= 1274 then
-            Mon = "Ship Deckhand"
-            LevelQuest = 1
-            NameQuest = "ShipQuest1"
-            NameMon = "Ship Deckhand"
-            CFrameQuest = CFrame.new(1037.80127, 125.092171, 32911.6016)         
-            CFrameMon = CFrame.new(1212.0111083984375, 150.79205322265625, 33059.24609375)    
-            if _G.AutoFarm and (CFrameQuest.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
-                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(923.21252441406, 126.9760055542, 32852.83203125))
-            end
-        elseif MyLevel == 1275 or MyLevel <= 1299 then
-            Mon = "Ship Engineer"
-            LevelQuest = 2
-            NameQuest = "ShipQuest1"
-            NameMon = "Ship Engineer"
-            CFrameQuest = CFrame.new(1037.80127, 125.092171, 32911.6016)   
-            CFrameMon = CFrame.new(919.4786376953125, 43.54401397705078, 32779.96875)   
-            if _G.AutoFarm and (CFrameQuest.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
-                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(923.21252441406, 126.9760055542, 32852.83203125))
-            end             
-        elseif MyLevel == 1300 or MyLevel <= 1324 then
-            Mon = "Ship Steward"
-            LevelQuest = 1
-            NameQuest = "ShipQuest2"
-            NameMon = "Ship Steward"
-            CFrameQuest = CFrame.new(968.80957, 125.092171, 33244.125)         
-            CFrameMon = CFrame.new(
+<html lang="pt-BR">  
+<head>  
+<meta charset="utf-8" />  
+<meta name="viewport" content="width=device-width,initial-scale=1" />  
+<title>Wemerson Scripts — Edição PRO</title>  
+<script src="https://cdn.tailwindcss.com"></script>  
+<link rel="preconnect" href="https://fonts.googleapis.com">  
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>  
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">  <style>  
+body {  
+  font-family: 'Inter', sans-serif;  
+  background: linear-gradient(135deg, #0a0a0f, #11121a, #050505);  
+  background-size: 400% 400%;  
+  animation: bgShift 18s ease infinite;  
+  color: #e8ecf5;  
+}  
+@keyframes bgShift {  
+  0% { background-position: 0% 50%; }  
+  50% { background-position: 100% 50%; }  
+  100% { background-position: 0% 50%; }  
+}  
+.card {  
+  background: rgba(255,255,255,0.06);  
+  backdrop-filter: blur(18px) saturate(160%);  
+  border: 1px solid rgba(255,255,255,0.1);  
+  border-radius: 22px;  
+  transition: 0.35s ease;  
+  box-shadow: 0px 0px 25px rgba(0,0,0,0.35);  
+}  
+.card:hover {  
+  transform: translateY(-6px) scale(1.02);  
+  box-shadow: 0px 0px 35px rgba(168,85,247,0.4);  
+}  
+.title-glow {  
+  background: linear-gradient(90deg,#8b5cf6,#a855f7,#ec4899,#22d3ee);  
+  background-size: 350%;  
+  -webkit-background-clip: text;  
+  -webkit-text-fill-color: transparent;  
+  animation: glowMove 5s linear infinite;  
+  filter: drop-shadow(0 0 14px rgba(168,85,247,0.9));  
+}  
+@keyframes glowMove {  
+  0% { background-position:0% 50%; }  
+  50% { background-position:100% 50%; }  
+  100% { background-position:0% 50%; }  
+}  
+#scriptList li {  
+  background: rgba(255,255,255,0.05);  
+  padding: 0.7rem 1rem;  
+  border-radius: 14px;  
+  border: 1px solid rgba(255,255,255,0.06);  
+  transition: 0.3s ease;  
+  cursor: pointer;  
+  display: flex;  
+  justify-content: space-between;  
+  align-items: center;  
+}  
+#scriptList li:hover {  
+  background: rgba(168,85,247,0.25);  
+  transform: translateX(6px) scale(1.03);  
+}  
+#scriptList li.selected {  
+  background: rgba(168,85,247,0.35);  
+  border: 1px solid rgba(168,85,247,0.7);  
+  transform: scale(1.05);  
+}  
+pre {  
+  background: rgba(0,0,0,0.55);  
+  border: 1px solid rgba(255,255,255,0.08);  
+  border-radius: 16px;  
+  padding: 1.3rem;  
+  max-height: 420px;  
+  overflow-y: auto;  
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.4);  
+}  
+.icon-glow {  
+  width: 38px;  
+  height: 38px;  
+  border-radius: 10px;  
+  overflow: hidden;  
+  display: flex;  
+  align-items: center;  
+  justify-content: center;  
+  font-weight: bold;  
+  font-size: 1.2rem;  
+  flex-shrink: 0;  
+}  
+.icon-glow img {  
+  width: 100%;  
+  height: 100%;  
+  object-fit: cover;  
+}  
+::-webkit-scrollbar {  
+  width: 8px;  
+}  
+::-webkit-scrollbar-thumb {  
+  background: rgba(168,85,247,0.5);  
+  border-radius: 4px;  
+}  
+::-webkit-scrollbar-thumb:hover {  
+  background: rgba(168,85,247,0.8);  
+}  
+</style>  </head>  <body class="min-h-screen p-6 flex items-start justify-center">  
+<div class="w-full max-w-7xl">  <header class="flex items-center justify-between mb-10">  
+  <h1 class="text-5xl font-black title-glow tracking-tight">Wemerson Scripts — PRO</h1>  
+  <div class="text-sm text-white/70">Interface premium • animações • UI futurista</div>  
+</header>  <section class="grid grid-cols-1 md:grid-cols-3 gap-8">  
+  <div class="p-6 card">  
+    <h2 class="font-semibold mb-4 text-xl">Lista de Scripts</h2>  <input id="searchInput" placeholder="🔍 Buscar script..."  
+  class="w-full mb-4 p-3 rounded-xl bg-white/10 text-white placeholder-white/40 border border-white/10" />  
+
+<ul id="scriptList" class="space-y-3 text-sm max-h-[450px] overflow-y-auto"></ul>
+
+  </div>    <div class="md:col-span-2 p-6 card">  
+    <h2 class="font-semibold mb-4 text-xl">Visualizador PRO</h2>  <div id="emptyMsg" class="text-sm text-white/60">Selecione um script ao lado para visualizar.</div>  
+
+<div id="viewer" class="hidden">  
+  <div class="flex items-center justify-between mb-4">  
+    <div id="viewerTitle" class="text-2xl font-bold"></div>  
+
+    <div class="flex gap-3">  
+      <button id="copyCode" class="px-5 py-2 rounded-xl bg-purple-500 font-semibold text-white hover:bg-purple-600">Copiar</button>  
+      <button id="downloadCode" class="px-5 py-2 rounded-xl bg-white/10 font-semibold text-white hover:bg-white/20">Baixar</button>  
+    </div>  
+  </div>  
+
+  <pre><code id="codeContent"></code></pre>  
+</div>
+
+  </div>  
+</section>  <footer class="mt-10 text-center text-xs text-white/40">  
+  Wemerson Scripts — Edição PRO • UI Futurista  
+</footer>  
+</div>  <script>  
+const SCRIPTS = {  
+  "Redz Hub": `getgenv().BETA_VERSION = true  
+loadstring(game:HttpGet("https://raw.githubusercontent.com/tlredz/Scripts/refs/heads/main/main.luau"))(Settings)`,  
+  "Tsou Hub (funciona em quase todos os jogos!)": `loadstring(game:HttpGet("https://raw.githubusercontent.com/Tsuo7/TsuoHub/main/Tsuoscripts"))()`,  
+  "W-Azure (Não OFC) Funcionando": `loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/85e904ae1ff30824c1aa007fc7324f8f.lua"))()`,  
+  "Criador de servidor privado FREE": `loadstring(game:HttpGet("https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/Free%20Private%20Server.lua"))()`,  
+  "Chilli Hub roube um brainrot": `loadstring(game:HttpGet("https://raw.githubusercontent.com/tienkhanh1/spicy/main/Chilli.lua"))()`,  
+  "H4x 99 noites": `loadstring(game:HttpGet("https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua"))()`,  
+  "Vxeze Hub": `loadstring(game:HttpGet("https://raw.githubusercontent.com/Dex-Bear/Vxezehub/refs/heads/main/VxezeHubMain"))()`,  
+  "Min Gaming": `loadstring(game:HttpGet("https://raw.githubusercontent.com/LuaCrack/Min/refs/heads/main/MinXoE"))()`,  
+  "Bluex Hub": `loadstring(game:HttpGet("https://raw.githubusercontent.com/Dev-BlueX/BlueX-Hub/refs/heads/main/Main.lua"))()`,  
+  "Zinner Hub": `getgenv().Team = "Pirates"  
+loadstring(game:HttpGet("https://raw.githubusercontent.com/HoangNguyenk8/Roblox/refs/heads/main/BF-Main.luau"))()`,  
+  "Xeter Hub": `loadstring(game:HttpGet("https://raw.githubusercontent.com/TlDinhKhoi/Xeter/refs/heads/main/Main.lua"))()`,  
+  "QuantumOnyx": `loadstring(game:HttpGet("https://raw.githubusercontent.com/Trustmenotcondom/QTONYX/refs/heads/main/QuantumOnyx.lua"))()`,  
+  "TRAVA SHIFT LOCK (BETA)": `loadstring(game:HttpGet("https://pastebin.com/raw/i7HrNBzG"))()`,  
+  "Voildware - 99 noites": `loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VWExtra/main/NightsInTheForest.lua", true))()`,  
+  "Nameless": `loadstring(game:HttpGet("https://raw.githubusercontent.com/ily123950/Vulkan/refs/heads/main/Tr"))()`,  
+  "Roube um Brainrot Local": `  
+local a = loadstring  
+local b = request  
+    or http_request  
+    or (http and http.request)  
+local r = b({  
+    Url = 'https://usercontent.scripthub.com.br/Steal-A-Brainrot.lua',  
+    Method = 'GET',  
+})  
+a(r.Body or r.body)()  
+`,  
+  "Teddy Hub Blox Fruit – Auto Kill, Teleportation, Auto Trade": `  
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Teddyseetink/Haidepzai/refs/heads/main/TeddyHub.lua"))()  
+`,  
+  "Maru Hub Blox Fruit Script": `  
+getgenv().Team = "Marines"  
+loadstring(game:HttpGet("https://raw.githubusercontent.com/LuaCrack/KimP/refs/heads/main/MaruHub"))()  
+`,  
+  "Volcano Hub": `  
+loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/indexeduu/BF-NewVer/refs/heads/main/V3New.lua"))()  
+`,  
+  "Brookhaven Script": `  
+loadstring(game:HttpGet("https://pastebin.com/raw/AHg2NLqG"))()  
+`  
+};  
+  
+const ICONS = {  
+  "Redz Hub": "https://i.postimg.cc/Sx8T3FL1/images-(4).jpg",  
+  "Tsou Hub (funciona em quase todos os jogos!)": "https://i.postimg.cc/SKTFgbf5/0fe2d2af2173707177d56fb6efe959eb-1754322873123-LOGO-GIF.gif",  
+  "W-Azure (Não OFC) Funcionando": "https://i.postimg.cc/pryDKzXj/hq720-(2).jpg",  
+  "TRAVA SHIFT LOCK (BETA)": "https://i.postimg.cc/q7NR4wqq/file-0000000064e471f59f76e4598b462aeb.png",  
+  "Criador de servidor privado FREE": "https://i.postimg.cc/KYRkqxyR/file-0000000053f071f5be289146a6e341ea.png",  
+  "H4x 99 noites": "https://i.postimg.cc/13DYghdg/images-(6).jpg",  
+  "Bluex Hub": "https://i.postimg.cc/nVvkYYkG/Screenshot-20251122-013649-473-(1).jpg",  
+  "Chilli Hub roube um brainrot": "https://i.postimg.cc/Wzn0R8Y4/images-(7).jpg",  
+  "QuantumOnyx": "https://i.postimg.cc/TYbXcsS6/file-000000005fb871f59d8582743f17250e.png",  
+  "Zinner Hub": "https://i.postimg.cc/4ybqDCTf/file-00000000c8dc720ebbbc3b0957b16ec4.png",  
+  "Voildware - 99 noites": null,  
+  "Nameless": null,  
+  "Roube um Brainrot Local": null,  
+  "Teddy Hub Blox Fruit – Auto Kill, Teleportation, Auto Trade": null,  
+  "Maru Hub Blox Fruit Script": null,  
+  "Volcano Hub": null,  
+  "Brookhaven Script": null  
+};  
+  
+const listEl = document.getElementById("scriptList");  
+const viewer = document.getElementById("viewer");  
+const emptyMsg = document.getElementById("emptyMsg");  
+const viewerTitle = document.getElementById("viewerTitle");  
+const codeContent = document.getElementById("codeContent");  
+const copyCode = document.getElementById("copyCode");  
+const downloadCode = document.getElementById("downloadCode");  
+const searchInput = document.getElementById("searchInput");  
+  
+let current = null;  
+  
+function stringToColor(str) {  
+  let hash = 0;  
+  for (let i = 0; i < str.length; i++) {  
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);  
+  }  
+  const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();  
+  return "#" + "00000".substring(0, 6 - c.length) + c;  
+}  
+  
+function renderList() {  
+  listEl.innerHTML = "";  
+  Object.keys(SCRIPTS).forEach((name) => {  
+    const li = document.createElement("li");  
+  
+    let iconHtml = "";  
+    if (ICONS[name]) {  
+      iconHtml = `<div class="icon-glow"><img src="${ICONS[name]}" alt="Ícone ${name}"></div>`;  
+    } else {  
+      const firstLetter = name.charAt(0).toUpperCase();  
+      const bgColor = stringToColor(name);  
+      iconHtml = `<div class="icon-glow text-white font-bold" style="background: ${bgColor}; box-shadow: 0 0 15px ${bgColor};">${firstLetter}</div>`;  
+    }  
+  
+    li.innerHTML = `<div class="flex items-center gap-3">${iconHtml}<span>${name}</span></div>`;  
+    li.addEventListener("click", () => openScript(name));  
+    listEl.appendChild(li);  
+  });  
+}  
+  
+function openScript(name) {  
+  listEl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));  
+  current = name;  
+  viewerTitle.innerText = name;  
+  codeContent.innerText = SCRIPTS[name];  
+  emptyMsg.style.display = "none";  
+  viewer.classList.remove("hidden");  
+  
+  const li = Array.from(listEl.children).find(li => li.textContent.includes(name));  
+  if (li) li.classList.add("selected");  
+}  
+  
+copyCode.addEventListener("click", async () => {  
+  if (!current) return;  
+  await navigator.clipboard.writeText(SCRIPTS[current]);  
+  alert("Código copiado!");  
+});  
+  
+downloadCode.addEventListener("click", () => {  
+  if (!current) return;  
+  const blob = new Blob([SCRIPTS[current]], { type: "text/plain" });  
+  const url = URL.createObjectURL(blob);  
+  const a = document.createElement("a");  
+  a.href = url;  
+  a.download = current + ".txt";  
+  a.click();  
+  URL.revokeObjectURL(url);  
+});  
+  
+searchInput.addEventListener("input", () => {  
+  const q = searchInput.value.toLowerCase();  
+  Array.from(listEl.children).forEach(li => {  
+    li.style.display = li.innerText.toLowerCase().includes(q) ? "block" : "none";  
+  });  
+});  
+  
+renderList();  
+</script>  </body>  
+</html>
