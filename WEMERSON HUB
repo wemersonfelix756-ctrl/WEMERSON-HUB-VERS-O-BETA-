@@ -1,104 +1,300 @@
 -- =========================================================
--- 🔐 WEMERSON HUB V3 | KEY SYSTEM
--- Key fixa: wemersonv3
+-- 🌑 SHADOW MM2
+-- Murder Mystery 2 Script | Full Source
+-- ESP Roles • Auto Grab Gun • Silent Aim • Kill Aura
+-- WalkSpeed • NoClip • Coin Farm
 -- =========================================================
 
--- COPIAR DISCORD AUTOMÁTICO
-if setclipboard then
-	setclipboard("https://discord.gg/hZKmxJQcF")
-end
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
 
--- RAYFIELD
+-- ================= RAYFIELD =================
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
--- KEY
-local CORRECT_KEY = "wemersonv3"
-local typedKey = ""
+-- ================= CONFIG =================
+local ESP_ENABLED = false
+local AUTO_GRAB_GUN = false
+local SILENT_AIM = false
+local KILL_AURA = false
+local KILL_AURA_RANGE = 15
+local WALK_SPEED = 16
+local NOCLIP = false
+local COIN_FARM = false
 
--- WINDOW
-local KeyWindow = Rayfield:CreateWindow({
-	Name = "🔐 WEMERSON HUB V3",
-	LoadingTitle = "WEMERSON HUB V3",
-	LoadingSubtitle = "Key System",
-	ConfigurationSaving = { Enabled = false },
-	KeySystem = false
+-- ================= WINDOW =================
+local Window = Rayfield:CreateWindow({
+    Name = "🌑 Shadow MM2",
+    LoadingTitle = "Shadow MM2",
+    LoadingSubtitle = "Murder Mystery 2 • Full Source",
+    Theme = "Dark",
 })
 
-local KeyTab = KeyWindow:CreateTab("🔑 Key")
+-- ================= TABS =================
+local VisualTab   = Window:CreateTab("Visual", 4483362458)
+local CombatTab   = Window:CreateTab("Combat", 4483362458)
+local MovementTab = Window:CreateTab("Movement", 4483362458)
+local FarmTab     = Window:CreateTab("Farm", 4483362458)
+local ConfigTab   = Window:CreateTab("Config", 4483362458)
 
--- NOTIFY
-Rayfield:Notify({
-	Title = "WEMERSON HUB V3",
-	Content = "Get Key on Discord (copied automatically)",
-	Duration = 5
+-- ================= VISUAL =================
+VisualTab:CreateToggle({
+    Name = "ESP Roles",
+    CurrentValue = false,
+    Callback = function(v)
+        ESP_ENABLED = v
+    end
 })
 
--- TEXTO NA TELA
-KeyTab:CreateParagraph({
-	Title = "🔑 KEY",
-	Content = "Get Key on Discord.\n\nThe Discord link was copied automatically when the script was executed."
+-- ================= COMBAT =================
+CombatTab:CreateToggle({
+    Name = "Auto Grab Gun",
+    CurrentValue = false,
+    Callback = function(v)
+        AUTO_GRAB_GUN = v
+    end
 })
 
--- INPUT
-KeyTab:CreateInput({
-	Name = "Enter the Key",
-	PlaceholderText = "Key here...",
-	RemoveTextAfterFocusLost = false,
-	Callback = function(text)
-		typedKey = text
-	end
+CombatTab:CreateToggle({
+    Name = "Silent Aim (Sheriff)",
+    CurrentValue = false,
+    Callback = function(v)
+        SILENT_AIM = v
+    end
 })
 
--- VERIFICAR
-KeyTab:CreateButton({
-	Name = "✅ Verify Key",
-	Callback = function()
-		if typedKey == "" then
-			Rayfield:Notify({
-				Title = "Error",
-				Content = "Enter the key!",
-				Duration = 3
-			})
-			return
-		end
-
-		if typedKey == CORRECT_KEY then
-			Rayfield:Notify({
-				Title = "Success",
-				Content = "Correct key! Opening WEMERSON HUB V3...",
-				Duration = 3
-			})
-
-			task.wait(1.5)
-			Rayfield:Destroy()
-
-			-- ======================
-			-- AQUI ENTRA SEU HUB
-			-- ======================
-			loadstring(game:HttpGet("https://pastebin.com/raw/1ZCHcPBq"))()
-
-		else
-			Rayfield:Notify({
-				Title = "Invalid Key",
-				Content = "Get Key on Discord!",
-				Duration = 4
-			})
-		end
-	end
+CombatTab:CreateToggle({
+    Name = "Kill Aura (Murderer)",
+    CurrentValue = false,
+    Callback = function(v)
+        KILL_AURA = v
+    end
 })
 
--- BOTÃO DISCORD
-KeyTab:CreateButton({
-	Name = "💜 Discord",
-	Callback = function()
-		if setclipboard then
-			setclipboard("https://discord.gg/hZKmxJQcF")
-		end
-
-		Rayfield:Notify({
-			Title = "Discord",
-			Content = "Link copied!",
-			Duration = 3
-		})
-	end
+CombatTab:CreateSlider({
+    Name = "Kill Aura Range",
+    Range = {5, 30},
+    Increment = 1,
+    CurrentValue = 15,
+    Callback = function(v)
+        KILL_AURA_RANGE = v
+    end
 })
+
+-- ================= MOVEMENT =================
+MovementTab:CreateSlider({
+    Name = "WalkSpeed",
+    Range = {16, 100},
+    Increment = 2,
+    CurrentValue = 16,
+    Callback = function(v)
+        WALK_SPEED = v
+    end
+})
+
+MovementTab:CreateToggle({
+    Name = "NoClip",
+    CurrentValue = false,
+    Callback = function(v)
+        NOCLIP = v
+    end
+})
+
+-- ================= FARM =================
+FarmTab:CreateToggle({
+    Name = "Coin Farm",
+    CurrentValue = false,
+    Callback = function(v)
+        COIN_FARM = v
+    end
+})
+
+-- ================= CONFIG =================
+ConfigTab:CreateButton({
+    Name = "Destroy GUI",
+    Callback = function()
+        Rayfield:Destroy()
+    end
+})
+
+-- ================= ESP =================
+local Highlights = {}
+
+local function GetRoles()
+    local success, data = pcall(function()
+        return ReplicatedStorage:FindFirstChild("GetPlayerData", true):InvokeServer()
+    end)
+    if success and data then
+        return data
+    end
+    return {}
+end
+
+local function ClearHighlights()
+    for _, h in pairs(Highlights) do
+        if h and h.Parent then
+            h:Destroy()
+        end
+    end
+    table.clear(Highlights)
+end
+
+local function UpdateESP()
+    if not ESP_ENABLED then
+        ClearHighlights()
+        return
+    end
+
+    local roles = GetRoles()
+
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr \~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            local roleData = roles[plr.Name]
+            local role = roleData and roleData.Role or "Innocent"
+
+            local color = Color3.fromRGB(0, 255, 0) -- Innocent
+            if role == "Murderer" then
+                color = Color3.fromRGB(255, 0, 0)
+            elseif role == "Sheriff" then
+                color = Color3.fromRGB(0, 120, 255)
+            end
+
+            local highlight = Highlights[plr]
+            if not highlight or not highlight.Parent then
+                highlight = Instance.new("Highlight")
+                highlight.Parent = plr.Character
+                Highlights[plr] = highlight
+            end
+
+            highlight.FillColor = color
+            highlight.OutlineColor = color
+            highlight.FillTransparency = 0.5
+            highlight.OutlineTransparency = 0
+            highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        end
+    end
+end
+
+-- ================= AUTO GRAB GUN =================
+local function AutoGrabGun()
+    if not AUTO_GRAB_GUN then return end
+
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj.Name == "GunDrop" or (obj:IsA("Tool") and string.find(string.lower(obj.Name), "gun")) then
+            local handle = obj:FindFirstChild("Handle") or obj:FindFirstChildWhichIsA("BasePart")
+            if handle then
+                local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    hrp.CFrame = handle.CFrame
+                    task.wait(0.12)
+                end
+            end
+        end
+    end
+end
+
+-- ================= TARGET FINDER =================
+local function GetClosestEnemy(range)
+    local closest, dist = nil, range or math.huge
+    local roles = GetRoles()
+    local myData = roles[LocalPlayer.Name]
+    local myRole = myData and myData.Role
+
+    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return nil end
+
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr \~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            local roleData = roles[plr.Name]
+            local theirRole = roleData and roleData.Role
+
+            local isTarget = false
+            if myRole == "Sheriff" and theirRole == "Murderer" then
+                isTarget = true
+            elseif myRole == "Murderer" and theirRole \~= "Murderer" then
+                isTarget = true
+            end
+
+            if isTarget then
+                local d = (plr.Character.HumanoidRootPart.Position - hrp.Position).Magnitude
+                if d < dist then
+                    dist = d
+                    closest = plr
+                end
+            end
+        end
+    end
+    return closest
+end
+
+-- ================= COIN FARM =================
+local function CoinFarm()
+    if not COIN_FARM then return end
+    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    for _, coin in ipairs(workspace:GetDescendants()) do
+        if coin.Name == "Coin" or string.find(string.lower(coin.Name), "coin") then
+            if coin:IsA("BasePart") or coin:FindFirstChildWhichIsA("BasePart") then
+                local part = coin:IsA("BasePart") and coin or coin:FindFirstChildWhichIsA("BasePart")
+                hrp.CFrame = part.CFrame + Vector3.new(0, 3, 0)
+                task.wait(0.15)
+                break
+            end
+        end
+    end
+end
+
+-- ================= MAIN LOOP =================
+RunService.RenderStepped:Connect(function()
+    local char = LocalPlayer.Character
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    if hum then
+        hum.WalkSpeed = WALK_SPEED
+    end
+
+    UpdateESP()
+    AutoGrabGun()
+    CoinFarm()
+end)
+
+-- NoClip
+RunService.Stepped:Connect(function()
+    if NOCLIP and LocalPlayer.Character then
+        for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+-- Kill Aura + Silent Aim
+task.spawn(function()
+    while task.wait(0.08) do
+        if KILL_AURA then
+            local target = GetClosestEnemy(KILL_AURA_RANGE)
+            if target and target.Character then
+                pcall(function()
+                    local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                    if tool then
+                        tool:Activate()
+                    end
+                end)
+            end
+        end
+
+        if SILENT_AIM then
+            local target = GetClosestEnemy(250)
+            if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                pcall(function()
+                    Camera.CFrame = CFrame.new(Camera.CFrame.Position, target.Character.HumanoidRootPart.Position)
+                end)
+            end
+        end
+    end
+end)
+
+print("🌑 Shadow MM2 carregado com sucesso!")
