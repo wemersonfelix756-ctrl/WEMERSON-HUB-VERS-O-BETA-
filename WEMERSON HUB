@@ -1,13 +1,13 @@
 -- =========================================================
--- 🌑 SHADOW MM2
--- Murder Mystery 2 Script | Full Source
+-- 🌑 SHADOW MM2 V1.1
 -- ESP Roles • Auto Grab Gun • Silent Aim • Kill Aura
--- WalkSpeed • NoClip • Coin Farm
+-- WalkSpeed • NoClip • Coin Farm (Smooth) • Hitbox • Void Fling
 -- =========================================================
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
 local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
@@ -17,7 +17,7 @@ local ok, Rayfield = pcall(function()
 end)
 
 if not ok or not Rayfield then
-    warn("Falha ao carregar Rayfield. Verifique a URL ou o executor.")
+    warn("Falha ao carregar Rayfield.")
     return
 end
 
@@ -30,54 +30,51 @@ local KILL_AURA_RANGE = 15
 local WALK_SPEED = 16
 local NOCLIP = false
 local COIN_FARM = false
+local COIN_TWEEN_SPEED = 50 -- studs por segundo (suave)
+local HITBOX_EXPAND = false
+local HITBOX_SIZE = 10
+local VOID_FLING = false
 
 -- ================= WINDOW =================
 local Window = Rayfield:CreateWindow({
     Name = "🌑 Shadow MM2",
     LoadingTitle = "Shadow MM2",
-    LoadingSubtitle = "Murder Mystery 2 • Full Source",
+    LoadingSubtitle = "V1.1 • Completo",
     Theme = "Dark",
 })
 
 -- ================= TABS =================
-local VisualTab   = Window:CreateTab("Visual", 4483362458)
-local CombatTab   = Window:CreateTab("Combat", 4483362458)
-local MovementTab = Window:CreateTab("Movement", 4483362458)
-local FarmTab     = Window:CreateTab("Farm", 4483362458)
-local ConfigTab   = Window:CreateTab("Config", 4483362458)
+local VisualTab   = Window:CreateTab("Visual")
+local CombatTab   = Window:CreateTab("Combat")
+local MovementTab = Window:CreateTab("Movement")
+local FarmTab     = Window:CreateTab("Farm")
+local TrollTab    = Window:CreateTab("Troll")
+local ConfigTab   = Window:CreateTab("Config")
 
 -- ================= VISUAL =================
 VisualTab:CreateToggle({
     Name = "ESP Roles",
     CurrentValue = false,
-    Callback = function(v)
-        ESP_ENABLED = v
-    end
+    Callback = function(v) ESP_ENABLED = v end
 })
 
 -- ================= COMBAT =================
 CombatTab:CreateToggle({
     Name = "Auto Grab Gun",
     CurrentValue = false,
-    Callback = function(v)
-        AUTO_GRAB_GUN = v
-    end
+    Callback = function(v) AUTO_GRAB_GUN = v end
 })
 
 CombatTab:CreateToggle({
     Name = "Silent Aim (Sheriff)",
     CurrentValue = false,
-    Callback = function(v)
-        SILENT_AIM = v
-    end
+    Callback = function(v) SILENT_AIM = v end
 })
 
 CombatTab:CreateToggle({
     Name = "Kill Aura (Murderer)",
     CurrentValue = false,
-    Callback = function(v)
-        KILL_AURA = v
-    end
+    Callback = function(v) KILL_AURA = v end
 })
 
 CombatTab:CreateSlider({
@@ -85,9 +82,21 @@ CombatTab:CreateSlider({
     Range = {5, 30},
     Increment = 1,
     CurrentValue = 15,
-    Callback = function(v)
-        KILL_AURA_RANGE = v
-    end
+    Callback = function(v) KILL_AURA_RANGE = v end
+})
+
+CombatTab:CreateToggle({
+    Name = "Hitbox Expander",
+    CurrentValue = false,
+    Callback = function(v) HITBOX_EXPAND = v end
+})
+
+CombatTab:CreateSlider({
+    Name = "Hitbox Size",
+    Range = {2, 25},
+    Increment = 1,
+    CurrentValue = 10,
+    Callback = function(v) HITBOX_SIZE = v end
 })
 
 -- ================= MOVEMENT =================
@@ -96,29 +105,57 @@ MovementTab:CreateSlider({
     Range = {16, 100},
     Increment = 2,
     CurrentValue = 16,
-    Callback = function(v)
-        WALK_SPEED = v
-    end
+    Callback = function(v) WALK_SPEED = v end
 })
 
 MovementTab:CreateToggle({
     Name = "NoClip",
     CurrentValue = false,
-    Callback = function(v)
-        NOCLIP = v
-    end
+    Callback = function(v) NOCLIP = v end
 })
 
 -- ================= FARM =================
 FarmTab:CreateToggle({
-    Name = "Coin Farm",
+    Name = "Coin Farm (Suave)",
     CurrentValue = false,
-    Callback = function(v)
-        COIN_FARM = v
+    Callback = function(v) COIN_FARM = v end
+})
+
+FarmTab:CreateSlider({
+    Name = "Velocidade do Tween (Coins)",
+    Range = {20, 150},
+    Increment = 5,
+    CurrentValue = 50,
+    Callback = function(v) COIN_TWEEN_SPEED = v end
+})
+
+-- ================= TROLL =================
+local TrollTab = Window:CreateTab("Troll", 4483362458)
+
+TrollTab:CreateToggle({
+    Name = "Void Fling (Em Contato)",
+    CurrentValue = false,
+    Callback = function(v) VOID_FLING = v end
+})
+
+TrollTab:CreateButton({
+    Name = "Fling Target Mais Próximo no Void",
+    Callback = function()
+        local target = GetClosestEnemy(50)
+        if target then
+            FlingToVoid(target)
+        end
     end
 })
 
 -- ================= CONFIG =================
+ConfigTab:CreateButton({
+    Name = "Rejoin",
+    Callback = function()
+        game:GetService("TeleportService"):Teleport(game.PlaceId, LocalPlayer)
+    end
+})
+
 ConfigTab:CreateButton({
     Name = "Destroy GUI",
     Callback = function()
@@ -126,186 +163,154 @@ ConfigTab:CreateButton({
     end
 })
 
--- ================= ESP =================
-local Highlights = {}
+-- ================= VARIÁVEIS EXTRA =================
+local HITBOX_EXPAND = false
+local HITBOX_SIZE = 10
+local VOID_FLING = false
+local COIN_TWEEN_SPEED = 50
+local originalHitboxes = {}
 
-local function GetRoles()
-    local success, data = pcall(function()
-        local getPlayerData = ReplicatedStorage:FindFirstChild("GetPlayerData", true)
-        if getPlayerData then
-            return getPlayerData:InvokeServer()
-        end
-        return {}
-    end)
-
-    if success and data then
-        return data
-    end
-
-    return {}
-end
-
-local function ClearHighlights()
-    for _, h in pairs(Highlights) do
-        if h and h.Parent then
-            h:Destroy()
-        end
-    end
-    table.clear(Highlights)
-end
-
-local function UpdateESP()
-    if not ESP_ENABLED then
-        ClearHighlights()
-        return
-    end
-
-    local roles = GetRoles()
-
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-            local roleData = roles[plr.Name]
-            local role = roleData and roleData.Role or "Innocent"
-
-            local color = Color3.fromRGB(0, 255, 0) -- Innocent
-            if role == "Murderer" then
-                color = Color3.fromRGB(255, 0, 0)
-            elseif role == "Sheriff" then
-                color = Color3.fromRGB(0, 120, 255)
-            end
-
-            local highlight = Highlights[plr]
-            if not highlight or not highlight.Parent then
-                highlight = Instance.new("Highlight")
-                highlight.Parent = plr.Character
-                Highlights[plr] = highlight
-            end
-
-            highlight.FillColor = color
-            highlight.OutlineColor = color
-            highlight.FillTransparency = 0.5
-            highlight.OutlineTransparency = 0
-            highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-        end
-    end
-end
-
--- ================= AUTO GRAB GUN =================
-local function AutoGrabGun()
-    if not AUTO_GRAB_GUN then return end
-
-    for _, obj in ipairs(workspace:GetDescendants()) do
-        if obj.Name == "GunDrop" or (obj:IsA("Tool") and string.find(string.lower(obj.Name), "gun")) then
-            local handle = obj:FindFirstChild("Handle") or obj:FindFirstChildWhichIsA("BasePart")
-            if handle then
-                local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    hrp.CFrame = handle.CFrame
-                    task.wait(0.12)
+-- ================= HITBOX EXPANDER =================
+CombatTab:CreateToggle({
+    Name = "Hitbox Expander",
+    CurrentValue = false,
+    Callback = function(v)
+        HITBOX_EXPAND = v
+        if not v then
+            -- Restaura hitboxes originais
+            for part, size in pairs(originalHitboxes) do
+                if part and part.Parent then
+                    part.Size = size
+                    part.Transparency = 1
+                    part.CanCollide = false
                 end
             end
+            originalHitboxes = {}
         end
     end
+})
+
+CombatTab:CreateSlider({
+    Name = "Hitbox Size",
+    Range = {2, 25},
+    Increment = 1,
+    CurrentValue = 10,
+    Callback = function(v) HITBOX_SIZE = v end
+})
+
+-- ================= FUNÇÕES =================
+local function IsAlive(plr)
+    local hum = plr.Character and plr.Character:FindFirstChildOfClass("Humanoid")
+    return hum and hum.Health > 0
 end
 
--- ================= TARGET FINDER =================
-local function GetClosestEnemy(range)
-    local closest, dist = nil, range or math.huge
-    local roles = GetRoles()
-    local myData = roles[LocalPlayer.Name]
-    local myRole = myData and myData.Role
+local function FlingToVoid(target)
+    if not target or not target.Character then return end
+    local root = target.Character:FindFirstChild("HumanoidRootPart")
+    local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not root or not myRoot then return end
 
-    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return nil end
+    -- Método clássico de fling (alto angular + velocidade)
+    local bv = Instance.new("BodyAngularVelocity")
+    bv.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+    bv.AngularVelocity = Vector3.new(0, 99999, 0)
+    bv.Parent = myRoot
 
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-            local roleData = roles[plr.Name]
-            local theirRole = roleData and roleData.Role
+    local bv2 = Instance.new("BodyVelocity")
+    bv2.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    bv2.Velocity = Vector3.new(0, -99999, 0) -- joga pra baixo (void)
+    bv2.Parent = myRoot
 
-            local isTarget = false
-            if myRole == "Sheriff" and theirRole == "Murderer" then
-                isTarget = true
-            elseif myRole == "Murderer" and theirRole ~= "Murderer" then
-                isTarget = true
-            end
-
-            if isTarget then
-                local d = (plr.Character.HumanoidRootPart.Position - hrp.Position).Magnitude
-                if d < dist then
-                    dist = d
-                    closest = plr
-                end
-            end
-        end
+    -- Fica colado no alvo por um tempo
+    local start = tick()
+    while tick() - start < 1.5 and target.Character and target.Character:FindFirstChild("HumanoidRootPart") do
+        myRoot.CFrame = target.Character.HumanoidRootPart.CFrame
+        RunService.Heartbeat:Wait()
     end
 
-    return closest
+    bv:Destroy()
+    bv2:Destroy()
 end
 
--- ================= COIN FARM =================
-local function CoinFarm()
-    if not COIN_FARM then return end
-    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-
-    for _, coin in ipairs(workspace:GetDescendants()) do
-        if coin.Name == "Coin" or string.find(string.lower(coin.Name), "coin") then
-            if coin:IsA("BasePart") or coin:FindFirstChildWhichIsA("BasePart") then
-                local part = coin:IsA("BasePart") and coin or coin:FindFirstChildWhichIsA("BasePart")
-                hrp.CFrame = part.CFrame + Vector3.new(0, 3, 0)
-                task.wait(0.15)
-                break
-            end
-        end
-    end
-end
-
--- ================= MAIN LOOP =================
+-- ================= MAIN LOOPS =================
 RunService.RenderStepped:Connect(function()
     local char = LocalPlayer.Character
     local hum = char and char:FindFirstChildOfClass("Humanoid")
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+
     if hum then
         hum.WalkSpeed = WALK_SPEED
     end
 
     UpdateESP()
-    AutoGrabGun()
-    CoinFarm()
+
+    if AUTO_GRAB_GUN then
+        AutoGrabGun()
+    end
+
+    if COIN_FARM and hrp then
+        -- Tween suave até a moeda mais próxima
+        local nearest, nearestDist = nil, math.huge
+        for _, coin in ipairs(workspace:GetDescendants()) do
+            if (coin.Name == "Coin" or string.find(string.lower(coin.Name), "coin")) then
+                local part = coin:IsA("BasePart") and coin or coin:FindFirstChildWhichIsA("BasePart")
+                if part then
+                    local d = (part.Position - hrp.Position).Magnitude
+                    if d < nearestDist then
+                        nearestDist = d
+                        nearest = part
+                    end
+                end
+            end
+        end
+
+        if nearest and nearestDist > 3 then
+            local distance = (nearest.Position - hrp.Position).Magnitude
+            local tweenTime = math.clamp(distance / COIN_TWEEN_SPEED, 0.1, 3)
+            local tween = TweenService:Create(hrp, TweenInfo.new(tweenTime, Enum.EasingStyle.Linear), {
+                CFrame = CFrame.new(nearest.Position + Vector3.new(0, 3, 0))
+            })
+            tween:Play()
+        end
+    end
 end)
 
--- NoClip
+-- Hitbox Expander
 RunService.Stepped:Connect(function()
-    if NOCLIP and LocalPlayer.Character then
-        for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = false
+    if HITBOX_EXPAND then
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr \~= LocalPlayer and plr.Character then
+                local root = plr.Character:FindFirstChild("HumanoidRootPart")
+                if root then
+                    if not originalHitboxes[root] then
+                        originalHitboxes[root] = root.Size
+                    end
+                    root.Size = Vector3.new(HITBOX_SIZE, HITBOX_SIZE, HITBOX_SIZE)
+                    root.Transparency = 0.7
+                    root.CanCollide = false
+                end
             end
         end
     end
 end)
 
--- Kill Aura + Silent Aim
-task.spawn(function()
-    while task.wait(0.08) do
-        if KILL_AURA then
-            local target = GetClosestEnemy(KILL_AURA_RANGE)
-            if target and target.Character then
-                pcall(function()
-                    local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Tool")
-                    if tool then
-                        tool:Activate()
-                    end
-                end)
-            end
-        end
+-- Void Fling (quando ativa e encosta)
+local flinging = false
+RunService.Stepped:Connect(function()
+    if VOID_FLING and not flinging and LocalPlayer.Character then
+        local myRoot = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if not myRoot then return end
 
-        if SILENT_AIM then
-            local target = GetClosestEnemy(250)
-            if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
-                pcall(function()
-                    Camera.CFrame = CFrame.new(Camera.CFrame.Position, target.Character.HumanoidRootPart.Position)
-                end)
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr \~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                local dist = (plr.Character.HumanoidRootPart.Position - myRoot.Position).Magnitude
+                if dist < 5 then
+                    flinging = true
+                    FlingToVoid(plr)
+                    task.wait(2)
+                    flinging = false
+                    break
+                end
             end
         end
     end
