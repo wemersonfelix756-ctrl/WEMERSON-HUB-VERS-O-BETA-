@@ -12,7 +12,14 @@ local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
 -- ================= RAYFIELD =================
-local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+local ok, Rayfield = pcall(function()
+    return loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+end)
+
+if not ok or not Rayfield then
+    warn("Falha ao carregar Rayfield. Verifique a URL ou o executor.")
+    return
+end
 
 -- ================= CONFIG =================
 local ESP_ENABLED = false
@@ -124,11 +131,17 @@ local Highlights = {}
 
 local function GetRoles()
     local success, data = pcall(function()
-        return ReplicatedStorage:FindFirstChild("GetPlayerData", true):InvokeServer()
+        local getPlayerData = ReplicatedStorage:FindFirstChild("GetPlayerData", true)
+        if getPlayerData then
+            return getPlayerData:InvokeServer()
+        end
+        return {}
     end)
+
     if success and data then
         return data
     end
+
     return {}
 end
 
@@ -150,7 +163,7 @@ local function UpdateESP()
     local roles = GetRoles()
 
     for _, plr in ipairs(Players:GetPlayers()) do
-        if plr \~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+        if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
             local roleData = roles[plr.Name]
             local role = roleData and roleData.Role or "Innocent"
 
@@ -206,14 +219,14 @@ local function GetClosestEnemy(range)
     if not hrp then return nil end
 
     for _, plr in ipairs(Players:GetPlayers()) do
-        if plr \~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+        if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
             local roleData = roles[plr.Name]
             local theirRole = roleData and roleData.Role
 
             local isTarget = false
             if myRole == "Sheriff" and theirRole == "Murderer" then
                 isTarget = true
-            elseif myRole == "Murderer" and theirRole \~= "Murderer" then
+            elseif myRole == "Murderer" and theirRole ~= "Murderer" then
                 isTarget = true
             end
 
@@ -226,6 +239,7 @@ local function GetClosestEnemy(range)
             end
         end
     end
+
     return closest
 end
 
