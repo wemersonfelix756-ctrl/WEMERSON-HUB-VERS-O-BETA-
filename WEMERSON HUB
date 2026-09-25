@@ -1,13 +1,14 @@
 -- =========================================================
--- 🌑 SHADOW MM2 V1.1
+-- 🌑 SHADOW MM2 V1.2
 -- ESP Roles • Auto Grab Gun • Silent Aim • Kill Aura
--- WalkSpeed • NoClip • Coin Farm (Smooth) • Hitbox • Void Fling
+-- WalkSpeed • NoClip • Coin Farm (Suave) • Hitbox • Void Fling
 -- =========================================================
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
+local TeleportService = game:GetService("TeleportService")
 local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
@@ -30,16 +31,20 @@ local KILL_AURA_RANGE = 15
 local WALK_SPEED = 16
 local NOCLIP = false
 local COIN_FARM = false
-local COIN_TWEEN_SPEED = 50 -- studs por segundo (suave)
+local COIN_TWEEN_SPEED = 50
 local HITBOX_EXPAND = false
 local HITBOX_SIZE = 10
 local VOID_FLING = false
+
+local originalHitboxes = {}
+local currentTween = nil
+local flinging = false
 
 -- ================= WINDOW =================
 local Window = Rayfield:CreateWindow({
     Name = "🌑 Shadow MM2",
     LoadingTitle = "Shadow MM2",
-    LoadingSubtitle = "V1.1 • Completo",
+    LoadingSubtitle = "V1.2 • Completo",
     Theme = "Dark",
 })
 
@@ -88,7 +93,19 @@ CombatTab:CreateSlider({
 CombatTab:CreateToggle({
     Name = "Hitbox Expander",
     CurrentValue = false,
-    Callback = function(v) HITBOX_EXPAND = v end
+    Callback = function(v)
+        HITBOX_EXPAND = v
+        if not v then
+            for part, size in pairs(originalHitboxes) do
+                if part and part.Parent then
+                    part.Size = size
+                    part.Transparency = 1
+                    part.CanCollide = false
+                end
+            end
+            originalHitboxes = {}
+        end
+    end
 })
 
 CombatTab:CreateSlider({
@@ -118,7 +135,13 @@ MovementTab:CreateToggle({
 FarmTab:CreateToggle({
     Name = "Coin Farm (Suave)",
     CurrentValue = false,
-    Callback = function(v) COIN_FARM = v end
+    Callback = function(v)
+        COIN_FARM = v
+        if not v and currentTween then
+            currentTween:Cancel()
+            currentTween = nil
+        end
+    end
 })
 
 FarmTab:CreateSlider({
@@ -130,7 +153,7 @@ FarmTab:CreateSlider({
 })
 
 -- ================= TROLL =================
-local TrollTab = Window:CreateTab("Troll", 4483362458)
+local TrollTab = Window:CreateTab("Troll")
 
 TrollTab:CreateToggle({
     Name = "Void Fling (Em Contato)",
@@ -139,7 +162,7 @@ TrollTab:CreateToggle({
 })
 
 TrollTab:CreateButton({
-    Name = "Fling Target Mais Próximo no Void",
+    Name = "Fling Alvo Mais Próximo no Void",
     Callback = function()
         local target = GetClosestEnemy(50)
         if target then
@@ -163,21 +186,22 @@ ConfigTab:CreateButton({
     end
 })
 
--- ================= VARIÁVEIS EXTRA =================
+-- ================= VARIÁVEIS =================
 local HITBOX_EXPAND = false
 local HITBOX_SIZE = 10
 local VOID_FLING = false
 local COIN_TWEEN_SPEED = 50
 local originalHitboxes = {}
+local currentTween = nil
+local flinging = false
 
--- ================= HITBOX EXPANDER =================
+-- Hitbox UI (já adicionado acima, só garantindo variáveis)
 CombatTab:CreateToggle({
     Name = "Hitbox Expander",
     CurrentValue = false,
     Callback = function(v)
         HITBOX_EXPAND = v
         if not v then
-            -- Restaura hitboxes originais
             for part, size in pairs(originalHitboxes) do
                 if part and part.Parent then
                     part.Size = size
@@ -198,19 +222,21 @@ CombatTab:CreateSlider({
     Callback = function(v) HITBOX_SIZE = v end
 })
 
--- ================= FUNÇÕES =================
-local function IsAlive(plr)
-    local hum = plr.Character and plr.Character:FindFirstChildOfClass("Humanoid")
-    return hum and hum.Health > 0
-end
+FarmTab:CreateSlider({
+    Name = "Velocidade do Tween (Coins)",
+    Range = {20, 150},
+    Increment = 5,
+    CurrentValue = 50,
+    Callback = function(v) COIN_TWEEN_SPEED = v end
+})
 
+-- ================= FUNÇÕES =================
 local function FlingToVoid(target)
     if not target or not target.Character then return end
     local root = target.Character:FindFirstChild("HumanoidRootPart")
     local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not root or not myRoot then return end
 
-    -- Método clássico de fling (alto angular + velocidade)
     local bv = Instance.new("BodyAngularVelocity")
     bv.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
     bv.AngularVelocity = Vector3.new(0, 99999, 0)
@@ -218,21 +244,20 @@ local function FlingToVoid(target)
 
     local bv2 = Instance.new("BodyVelocity")
     bv2.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-    bv2.Velocity = Vector3.new(0, -99999, 0) -- joga pra baixo (void)
+    bv2.Velocity = Vector3.new(0, -99999, 0)
     bv2.Parent = myRoot
 
-    -- Fica colado no alvo por um tempo
     local start = tick()
     while tick() - start < 1.5 and target.Character and target.Character:FindFirstChild("HumanoidRootPart") do
         myRoot.CFrame = target.Character.HumanoidRootPart.CFrame
         RunService.Heartbeat:Wait()
     end
 
-    bv:Destroy()
-    bv2:Destroy()
+    if bv then bv:Destroy() end
+    if bv2 then bv2:Destroy() end
 end
 
--- ================= MAIN LOOPS =================
+-- ================= LOOPS =================
 RunService.RenderStepped:Connect(function()
     local char = LocalPlayer.Character
     local hum = char and char:FindFirstChildOfClass("Humanoid")
@@ -248,11 +273,11 @@ RunService.RenderStepped:Connect(function()
         AutoGrabGun()
     end
 
-    if COIN_FARM and hrp then
-        -- Tween suave até a moeda mais próxima
+    -- Coin Farm com Tween suave
+    if COIN_FARM and hrp and not currentTween then
         local nearest, nearestDist = nil, math.huge
         for _, coin in ipairs(workspace:GetDescendants()) do
-            if (coin.Name == "Coin" or string.find(string.lower(coin.Name), "coin")) then
+            if coin.Name == "Coin" or string.find(string.lower(coin.Name), "coin") then
                 local part = coin:IsA("BasePart") and coin or coin:FindFirstChildWhichIsA("BasePart")
                 if part then
                     local d = (part.Position - hrp.Position).Magnitude
@@ -264,18 +289,30 @@ RunService.RenderStepped:Connect(function()
             end
         end
 
-        if nearest and nearestDist > 3 then
+        if nearest and nearestDist > 4 then
             local distance = (nearest.Position - hrp.Position).Magnitude
-            local tweenTime = math.clamp(distance / COIN_TWEEN_SPEED, 0.1, 3)
-            local tween = TweenService:Create(hrp, TweenInfo.new(tweenTime, Enum.EasingStyle.Linear), {
+            local tweenTime = math.clamp(distance / COIN_TWEEN_SPEED, 0.15, 4)
+            currentTween = TweenService:Create(hrp, TweenInfo.new(tweenTime, Enum.EasingStyle.Linear), {
                 CFrame = CFrame.new(nearest.Position + Vector3.new(0, 3, 0))
             })
-            tween:Play()
+            currentTween:Play()
+            currentTween.Completed:Connect(function()
+                currentTween = nil
+            end)
         end
     end
 end)
 
 -- Hitbox Expander
+local originalHitboxes = {}
+local HITBOX_EXPAND = false
+local HITBOX_SIZE = 10
+local VOID_FLING = false
+local COIN_TWEEN_SPEED = 50
+local currentTween = nil
+local flinging = false
+local TweenService = game:GetService("TweenService")
+
 RunService.Stepped:Connect(function()
     if HITBOX_EXPAND then
         for _, plr in ipairs(Players:GetPlayers()) do
@@ -294,7 +331,33 @@ RunService.Stepped:Connect(function()
     end
 end)
 
--- Void Fling (quando ativa e encosta)
+-- Void Fling
+local function FlingToVoid(target)
+    if not target or not target.Character then return end
+    local root = target.Character:FindFirstChild("HumanoidRootPart")
+    local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not root or not myRoot then return end
+
+    local bv = Instance.new("BodyAngularVelocity")
+    bv.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+    bv.AngularVelocity = Vector3.new(0, 99999, 0)
+    bv.Parent = myRoot
+
+    local bv2 = Instance.new("BodyVelocity")
+    bv2.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    bv2.Velocity = Vector3.new(0, -99999, 0)
+    bv2.Parent = myRoot
+
+    local start = tick()
+    while tick() - start < 1.5 and target.Character and target.Character:FindFirstChild("HumanoidRootPart") do
+        myRoot.CFrame = target.Character.HumanoidRootPart.CFrame
+        RunService.Heartbeat:Wait()
+    end
+
+    if bv then bv:Destroy() end
+    if bv2 then bv2:Destroy() end
+end
+
 local flinging = false
 RunService.Stepped:Connect(function()
     if VOID_FLING and not flinging and LocalPlayer.Character then
